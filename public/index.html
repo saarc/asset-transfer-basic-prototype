@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>asset-transfer prototype</title>
+
+    <!-- 라이브러리 추가 JQUERY, BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="container">
+            <!-- 페이지소개 -->
+            <br>
+            <h2>안녕하세요 asset transfer <br>fabric 연동 프로토타입 페이지 입니다.</h2>
+            <br>
+            <hr>
+        </div>
+        <div class="container">
+            <!-- 관리자 인증서 입력영역 -->
+            <label for="aid" class="form-label">관리자ID:</label>
+            <input type="text" id="aid" class="form-control">
+            <br>
+            <label for="apw">관리자PW:</label>
+            <input type="password" id="apw" class="form-control">
+            <br>
+            <button id="abutton" class="btn btn-outline-dark">관리자 인증서 생성</button>
+            <br>
+            <!-- 결과영역 -->
+            <p id="aresult"></p>
+            <br>
+            <hr>
+        </div>
+        
+        <div class="container">
+            <!-- 사용자 인증서 입력영역 -->
+            <label for="uid" class="form-label">사용자ID:</label>
+            <input type="text" id="uid" class="form-control">
+            <br>
+            <label for="urole">역할:</label>
+            <input type="text" id="urole" class="form-control"> 
+            <br>
+            <button id="ubutton" class="btn btn-outline-danger">사용자 인증서 생성</button>
+            <br>
+            <br>
+            <!-- 결과영역 -->
+            <p id="uresult"></p>
+            <hr>
+        </div>
+        
+        <div class="container">
+            <!-- 자산 생성 영역 -->
+            <label for="ascert" class="form-label">인증서ID:</label>
+            <input type="text" id="ascert" class="form-control">
+            <br>
+            <label for="asid" class="form-label">자산ID:</label>
+            <input type="text" id="asid" class="form-control">
+            <br>
+            <label for="ascolor">색:</label>
+            <input type="text" id="ascolor" class="form-control"> 
+            <br>
+            <label for="assize">크기:</label>
+            <input type="text" id="assize" class="form-control"> 
+            <br>
+            <label for="asowner">주인:</label>
+            <input type="text" id="asowner" class="form-control"> 
+            <br>
+            <label for="asvalue">값:</label>
+            <input type="text" id="asvalue" class="form-control"> 
+            <br>
+            <button id="asbutton" class="btn btn-outline-success">자산 생성</button>
+            <br>
+            <br>
+            <!-- 결과영역 -->
+            <p id="asresult"></p><hr>
+        </div>
+
+        <div class="container">
+            <!-- 자산 조회 영역 -->
+            <label for="qeury_cert_id" class="form-label">인증서ID:</label>
+            <input type="text" id="qeury_cert_id" class="form-control">
+            <br>
+            <label for="query_asset_id" class="form-label">자산ID:</label>
+            <input type="text" id="query_asset_id" class="form-control">
+            <br>
+            <button id="query_asset_button" class="btn btn-outline-primary">자산 조회</button>
+            <br>
+            <br>
+            <!-- 결과영역 -->
+            <p id="query_result"></p>
+            <hr>
+        </div>
+
+        <div class="container">
+            <!-- 자산 전송 영역 -->
+            <label for="trans_cert_id" class="form-label">인증서ID:</label>
+            <input type="text" id="trans_cert_id" class="form-control">
+            <br>
+            <label for="trans_asset_id" class="form-label">자산ID:</label>
+            <input type="text" id="trans_asset_id" class="form-control">
+            <br>
+            <label for="trans_asset_owner" class="form-label">새주인:</label>
+            <input type="text" id="trans_asset_owner" class="form-control">
+            <br>
+            <button id="trans_asset_button" class="btn btn-outline-primary">자산 전송</button>
+            <br>
+            <br>
+            <!-- 결과영역 -->
+            <p id="trans_result"></p>
+            <hr>
+        </div>
+    
+    </div>
+</body>
+
+<script>
+    // 관리자인증서발급버튼이 눌러졌을때
+    // WEBSERVER -> /admin, POST, adminid, adminpassword => 결과 업데이트
+    $("#abutton").click( function() {
+        var id = $("#aid").val();
+        var pw = $("#apw").val();
+
+        console.log(id, pw);
+
+        $.post('/admin',{adminid:id, passwd:pw}, function(data) {
+            $("#aresult").empty();
+            $("#aresult").append(data.result);
+            $("#aresult").append(" : ");
+            $("#aresult").append(data.msg); 
+        });
+    });
+
+    // 사용자인증서발급버튼이 눌러졌을때
+    // WEBSERVER -> /user, POST, userid, role => 결과 업데이트
+    $("#ubutton").click( function() {
+        var id = $("#uid").val();
+        var role = $("#urole").val();
+
+        console.log(id, role);
+
+        $.post('/user',{id:id, role:role}, function(data) {
+            $("#uresult").empty();
+            $("#uresult").append(data.result);
+            $("#uresult").append(" : ");
+            $("#uresult").append(data.msg); 
+        });
+    });
+
+    // 자산생성 JS
+    $("#asbutton").click( function() {
+        var ascert = $("#ascert").val();
+        var asid = $("#asid").val();
+        var ascolor = $("#ascolor").val();
+        var assize = $("#assize").val();
+        var asowner = $("#asowner").val();
+        var asvalue = $("#asvalue").val();
+
+        console.log(ascert, asid, ascolor, assize, asowner, asvalue);
+
+        $.post('/asset',{ascert, asid, ascolor, assize, asowner, asvalue}, function(data) {
+            $("#asresult").empty();
+            $("#asresult").append(data.result);
+            $("#asresult").append(" : ");
+            $("#asresult").append(data.msg); 
+        });
+    });
+
+    // 자산조회 JS
+    $("#query_asset_button").click( function() {
+        var cert = $("#qeury_cert_id").val();
+        var aid = $("#query_asset_id").val();
+
+        console.log(cert, aid);
+
+        $.get('/asset',{cert, aid}, function(data) {
+            $("#query_result").empty();
+            $("#query_result").append(data.result);
+            $("#query_result").append(" : ");
+            $("#query_result").append(data.msg); 
+            if(data.result == "success"){
+                $("#query_result").append(" : ");
+                $("#query_result").append(JSON.stringify(data.content));  
+            }
+        });
+    });
+
+    // 자산전송 JS
+    $("#trans_asset_button").click( function() {
+        var cert = $("#trans_cert_id").val();
+        var aid = $("#trans_asset_id").val();
+        var aowner = $("#trans_asset_owner").val();
+
+        console.log(cert, aid, aowner);
+
+        $.post('/assets',{cert, aid, aowner}, function(data) {
+            $("#trans_result").empty();
+            $("#trans_result").append(data.result);
+            $("#trans_result").append(" : ");
+            $("#trans_result").append(data.msg); 
+        });
+    });
+
+</script>
+
+</html>
